@@ -134,3 +134,4 @@ C:\Users\SH.Rayan\source\repos\MyPracticeWebApi\obj\Debug\net8.0\refint\MyPracti
 C:\Users\SH.Rayan\source\repos\MyPracticeWebApi\obj\Debug\net8.0\MyPracticeWebApi.pdb
 C:\Users\SH.Rayan\source\repos\MyPracticeWebApi\obj\Debug\net8.0\MyPracticeWebApi.genruntimeconfig.cache
 C:\Users\SH.Rayan\source\repos\MyPracticeWebApi\obj\Debug\net8.0\ref\MyPracticeWebApi.dll
+C:\Users\SH.Rayan\source\repos\MyPracticeWebApi\obj\Debug\net8.0\MyPracticeWebApi.sourcelink.json

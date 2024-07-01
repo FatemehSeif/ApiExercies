@@ -12,76 +12,93 @@ namespace MyPracticeWebApi.Models.Services
 
 			_context = context;
 		}
+
+
 		public List<TODoDTO> GetAll()
 		{
-			return _context.ToDos.Select(P => new TODoDTO
-			{
-				Id = P.Id,
-				Text = P.Text,
-				InsertTime = P.InsertTime,
-				IsRemoved = P.IsRemoved,
 
+			return _context.ToDos.Select(p => new TODoDTO
+			{
+				Categories = p.Categories,
+				Id = p.Id,
+				InsertTime = p.InsertTime,
+				IsRemoved = p.IsRemoved,
+				Text = p.Text,
 
 			}).ToList();
+
+
+
+
 		}
 
-		public TODoDTO Get(int Id)
+		public TODoDTO GetById(int id)
 		{
-			var todo = _context.ToDos.SingleOrDefault(p => p.Id == Id);
+			var todo = _context.ToDos.SingleOrDefault(p => p.Id == id);
 			return new TODoDTO
 			{
 				Id = todo.Id,
-				Text = todo.Text,
 				InsertTime = todo.InsertTime,
 				IsRemoved = todo.IsRemoved,
-
+				Text = todo.Text,
 
 			};
 
 
+		}
+		public AddToDoDTO AddToDoItem(AddToDoDTO todo)
+		{
+			ToDo newTodo = new ToDo()
+			{
+				Id = todo.Todo.Id,
+				Text = todo.Todo.Text,
+				InsertTime = DateTime.Now,
+				IsRemoved = false,
+			};
 
+			foreach (var item in todo.Categories)
+			{
+				var category = _context.Categories.SingleOrDefault(p => p.Id == item);
+				newTodo.Categories.Add(category);
+			}
+
+			_context.ToDos.Add(newTodo);
+			_context.SaveChanges();	
+			return new AddToDoDTO
+			{
+				Todo = new TODoDTO
+				{
+					Id = newTodo.Id,
+					Text = newTodo.Text,
+					InsertTime = newTodo.InsertTime,
+					IsRemoved = newTodo.IsRemoved,
+				},
+				Categories = newTodo.Categories.Select(c => c.Id).ToList(),
+			};
 		}
 
-		//public AddToDoDTO (AddToDoDTO todo)
-		//{
-			
-		//	ToDo newToDo = new ToDo()
-		//	{
-		//		Id = todo.Todo.Id,
-		//		Text = todo.Todo.Text,
-		//		InsertTime = DateTime.Now,
-		//		IsRemoved = false,
-		//	};
-		//	foreach (var item in todo.Categories)
-		//	{
-		//		var category = _context.Categories.SingleOrDefault(p => p.Id == item);
-		//		newToDo.Categories.Add(category);	
-		//	}
-		//	_context.ToDos.Add(newToDo);
-		//	return new AddToDoDTO
-		//	{
+		public void Delete (int Id)
+		{
+			//_context.ToDos.Remove(new ToDo { Id= Id });	
+		  var todo=	_context.ToDos.Find(Id);
+			todo.IsRemoved = true;
 
-		//		Todo = new TODoDTO
-		//		{
-		//			Id = newToDo.Id,
-		//			InsertTime = newToDo.InsertTime,
-		//			IsRemoved = newToDo.IsRemoved,
-		//			Text = newToDo.Text,
-
-		//		},
-
-		//		//Categories = newToDo.Categories ;
-		//	};
-
-		//}
+			_context.SaveChanges();	
 
 
+		}
+		public bool Edit (EditToDoDTO edit)
+		{
+			var todo = _context.ToDos.FirstOrDefault(p=> p.Id==edit.Id);
+			todo.Text = edit.Text;
+			_context.SaveChanges();
+			return true;	
+
+		}
 
 
 
 	}
-
-
 
 	public class TODoDTO
 	{
@@ -98,9 +115,19 @@ namespace MyPracticeWebApi.Models.Services
 	{
 		public TODoDTO Todo { get; set; }
 
-		public List < int> Categories { get; set; }
+		public List<int> Categories { get; set; } = new List<int> (); 
 
 
 	}
+	public class EditToDoDTO
+	{
+		public int Id {  set; get; }	
+		public string? Text { get; set; } 
+		public List<int> Categories { get; set; }
+
+	}
+
+
+
 }
 
